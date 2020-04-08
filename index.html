@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Estia Kwarantanna</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col text-center mt-5">
+                <h1>Estia Kwarantanna</h1>
+                <p>We have been locked in for: </p>
+                <h3 id="daysIn">0</h3>
+                <p>pays.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="card">
+                    <img src="https://raw.githubusercontent.com/NovelCOVID/API/master/assets/flags/cy.png" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Cyprus</h5>
+                                                                        <pre class="card-text"> 
+"cases": 526,
+"todayCases": 32,
+"deaths": 9,
+"todayDeaths": 0</pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <img src="https://raw.githubusercontent.com/NovelCOVID/API/master/assets/flags/pl.png" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Poland</h5>
+                                                <pre class="card-text"> 
+"cases": 5205,
+"todayCases": 357,
+"deaths": 159,
+"todayDeaths": 30</pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <img src="https://raw.githubusercontent.com/NovelCOVID/API/master/assets/flags/lk.png" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Sri Lanka</h5>
+                        <pre class="card-text"> 
+"cases": 189,
+"todayCases": 4,
+"deaths": 7,
+"todayDeaths": 1</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    const firstDate = new Date(2020, 2, 21);
+    const secondDate = new Date();
+    const diffDays = Math.round(Math.abs((secondDate - firstDate) / oneDay));
+    console.log(diffDays)
+    let d = document.getElementById('daysIn')
+    d.innerHTML = diffDays
+    Promise.all([
+            fetch("https://corona.lmao.ninja/countries/CY"),
+            fetch("https://corona.lmao.ninja/countries/PL"),
+            fetch("https://corona.lmao.ninja/countries/LK")
+        ])
+        .then(responses => {
+            // Get a JSON object from each of the responses
+            return responses.map(function(response) {
+                return response.json();
+            });
+        }).then(data => {
+            // Log the data to the console
+            // You would do something with both sets of data here
+            let xlp = data.map(country => {
+                return country
+            })
+
+        }).catch(function(error) {
+            // if there's an error, log it
+            console.log('Here is an error:')
+            console.log(error);
+        });
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+</body>
+
+</html>
