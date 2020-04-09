@@ -8,6 +8,20 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Estia Kwarantanna</title>
+    <style type="text/css">
+    .lk-img {
+        padding-bottom: 40px;
+    }
+
+    .myimg{
+        min-height: 240px
+    }
+
+    .card {
+        min-width: 350px !important;
+        max-width: 400px;
+    }
+    </style>
 </head>
 
 <body>
@@ -21,77 +35,95 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-4">
-                <div class="card">
-                    <img src="https://raw.githubusercontent.com/NovelCOVID/API/master/assets/flags/cy.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Cyprus</h5>
-                                                                        <pre class="card-text"> 
-"cases": 526,
-"todayCases": 32,
-"deaths": 9,
-"todayDeaths": 0</pre>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="card">
-                    <img src="https://raw.githubusercontent.com/NovelCOVID/API/master/assets/flags/pl.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Poland</h5>
-                                                <pre class="card-text"> 
-"cases": 5205,
-"todayCases": 357,
-"deaths": 159,
-"todayDeaths": 30</pre>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="card">
-                    <img src="https://raw.githubusercontent.com/NovelCOVID/API/master/assets/flags/lk.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Sri Lanka</h5>
-                        <pre class="card-text"> 
-"cases": 189,
-"todayCases": 4,
-"deaths": 7,
-"todayDeaths": 1</pre>
-                    </div>
-                </div>
+            <div class="card-deck flex-grow-1" id="cardDeck">
             </div>
         </div>
     </div>
     <script type="text/javascript">
-    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-    const firstDate = new Date(2020, 2, 21);
-    const secondDate = new Date();
-    const diffDays = Math.round(Math.abs((secondDate - firstDate) / oneDay));
-    console.log(diffDays)
-    let d = document.getElementById('daysIn')
-    d.innerHTML = diffDays
-    Promise.all([
-            fetch("https://corona.lmao.ninja/countries/CY"),
-            fetch("https://corona.lmao.ninja/countries/PL"),
-            fetch("https://corona.lmao.ninja/countries/LK")
-        ])
-        .then(responses => {
-            // Get a JSON object from each of the responses
-            return responses.map(function(response) {
-                return response.json();
-            });
-        }).then(data => {
-            // Log the data to the console
-            // You would do something with both sets of data here
-            let xlp = data.map(country => {
-                return country
+    function setDaysIn() {
+        const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+        const firstDate = new Date(2020, 2, 21);
+        const secondDate = new Date();
+        const diffDays = Math.round(Math.abs((secondDate - firstDate) / oneDay));
+        console.log(diffDays)
+        let d = document.getElementById('daysIn')
+        d.innerHTML = diffDays
+    }
+
+    async function getAllUrls(urls) {
+        try {
+            var data = await Promise.all(
+                urls.map(
+                    url =>
+                    fetch(url).then(
+                        (response) => response.json()
+                    )));
+
+            return (data)
+
+        } catch (error) {
+            console.log(error)
+
+            throw (error)
+        }
+    }
+
+    function setCountries() {
+        let urls = ["https://corona.lmao.ninja/countries/CY", "https://corona.lmao.ninja/countries/PL", "https://corona.lmao.ninja/countries/LK","https://corona.lmao.ninja/countries/AT","https://corona.lmao.ninja/countries/US"]
+        var responses = getAllUrls(urls)
+        responses.then(countries => {
+            let cardDeck = document.getElementById('cardDeck')
+            countries.forEach(country => {
+
+                let updatedAt = new Date(country.updated)
+                updatedAt = updatedAt.toString().substring(0, 25)
+                let margin = ''
+                if (country.country == 'Austria' || country.country == 'USA') {
+                    margin = 'mx-auto'
+                }
+                let newCard = ` <div class="card mb-4 ${margin}">
+                    <img src="${country.countryInfo.flag}" class="card-img-top myimg" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">${country.country}</h5>
+                        <div class="card-text">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Cases</th>
+                                        <td>${country.cases}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">New Today</th>
+                                        <td>${country.todayCases}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Deaths</th>
+                                        <td>${country.deaths}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Deaths Today</th>
+                                        <td>${country.todayDeaths}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Last updated ${updatedAt}</small>
+                    </div>
+                </div>`
+                cardDeck.innerHTML += newCard
+
             })
 
-        }).catch(function(error) {
-            // if there's an error, log it
-            console.log('Here is an error:')
-            console.log(error);
-        });
+
+
+
+
+        })
+    }
+    setDaysIn()
+    setCountries()
     </script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
