@@ -69,7 +69,7 @@
     }
 
     function setCountries() {
-        let urls = ["https://corona.lmao.ninja/countries/CY", "https://corona.lmao.ninja/countries/PL", "https://corona.lmao.ninja/countries/LK","https://corona.lmao.ninja/countries/AT","https://corona.lmao.ninja/countries/US"]
+        let urls = ["https://corona.lmao.ninja/v2/countries/CY", "https://corona.lmao.ninja/v2/countries/PL", "https://corona.lmao.ninja/v2/countries/LK","https://corona.lmao.ninja/v2/countries/AT","https://corona.lmao.ninja/v2/countries/US"]
         var responses = getAllUrls(urls)
         responses.then(countries => {
             let cardDeck = document.getElementById('cardDeck')
